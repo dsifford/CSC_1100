@@ -2,9 +2,11 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 )
 
 func main() {
@@ -47,20 +49,47 @@ func problem1() {
 
 }
 
+// Problem 2 utils
+
+type ticket struct {
+	Price, Sold float64
+}
+
+func (t ticket) sales() float64 {
+	return t.Sold * t.Price
+}
+
+func totalSold(t ...ticket) (sold float64) {
+	for _, val := range t {
+		sold += val.Sold
+	}
+	return
+}
+
+func totalSales(t ...ticket) (sales float64) {
+	for _, val := range t {
+		sales += val.sales()
+	}
+	return
+}
+
+func parseTicketData(s *bufio.Scanner) (price, sold float64, err error) {
+	s.Split(bufio.ScanLines)
+	if scannable := s.Scan(); scannable == false {
+		err = errors.New("EOL Reached; Nothing else scannable")
+		return
+	}
+	values := strings.Split(s.Text(), " ")
+	price, _ = strconv.ParseFloat(values[0], 64)
+	sold, _ = strconv.ParseFloat(values[1], 64)
+
+	return
+
+}
+
 func problem2() {
 
-	var boxSales, sidelineSales, premiumSales, generalSales,
-		totalSold, totalSales float64
-
-	data := make(map[string]float64)
-	data["boxPrice"] = 0
-	data["boxSold"] = 0
-	data["sidelinePrice"] = 0
-	data["sidelineSold"] = 0
-	data["premiumPrice"] = 0
-	data["premiumSold"] = 0
-	data["generalPrice"] = 0
-	data["generalSold"] = 0
+	var box, sideline, premium, general ticket
 
 	inFile, err := os.Open("inFile2")
 	if err != nil {
@@ -75,32 +104,32 @@ func problem2() {
 	defer outFile.Close()
 
 	scanner := bufio.NewScanner(inFile)
-	scanner.Split(bufio.ScanWords)
 
-	for key := range data {
-		if scannable := scanner.Scan(); scannable == false {
-			break
-		}
-		val, _ := strconv.ParseFloat(scanner.Text(), 64)
-		data[key] = val
+	box.Price, box.Sold, err = parseTicketData(scanner)
+	if err != nil {
+		panic(err)
 	}
-
-	boxSales = data["boxSold"] * data["boxPrice"]
-	sidelineSales = data["sidelineSold"] * data["sidelinePrice"]
-	premiumSales = data["premiumSold"] * data["premiumPrice"]
-	generalSales = data["generalSold"] * data["generalPrice"]
-
-	totalSold = data["boxSold"] + data["sidelineSold"] + data["premiumSold"] +
-		data["generalSold"]
-
-	totalSales = boxSales + sidelineSales + premiumSales + generalSales
+	sideline.Price, sideline.Sold, err = parseTicketData(scanner)
+	if err != nil {
+		panic(err)
+	}
+	premium.Price, premium.Sold, err = parseTicketData(scanner)
+	if err != nil {
+		panic(err)
+	}
+	general.Price, general.Sold, err = parseTicketData(scanner)
+	if err != nil {
+		panic(err)
+	}
 
 	writer := bufio.NewWriter(outFile)
 	fmt.Fprintf(writer, "Number of tickets sold: %.2f\nTotal Revenue in sales: $%.2f",
-		totalSold, totalSales)
+		totalSold(box, sideline, premium, general), totalSales(box, sideline, premium, general))
 	writer.Flush()
 
 }
+
+// Problem 3 utils
 
 type person struct {
 	Fname, Lname                   string
