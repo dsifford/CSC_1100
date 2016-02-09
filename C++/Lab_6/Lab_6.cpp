@@ -26,9 +26,9 @@ int main() {
     if (totalSales < 5000) {
         additionalBonus = 0;
     } else if (totalSales > 100000) {
-        additionalBonus = (totalSales * 0.06) + totalSales;
+        additionalBonus = totalSales * 0.06;
     } else {
-        additionalBonus = (totalSales * 0.03) + totalSales;
+        additionalBonus = totalSales * 0.03;
     }
 
     payCheck = baseSalary + bonus + additionalBonus;
