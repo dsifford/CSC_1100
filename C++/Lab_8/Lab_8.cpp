@@ -5,7 +5,8 @@ using namespace std;
 
 int main() {
 
-    double popA, popB, growthA, growthB;
+    int popA, popB;
+    double growthA, growthB;
     int yrs = 0;
 
     cout << "Enter the population of town A" << endl;
@@ -29,12 +30,14 @@ int main() {
     }
 
     while (popB >= popA) {
-        popB = popB * growthB;
-        popA = popA * growthA;
+        popB = (popB * growthB) + popB;
+        popA = (popA * growthA) + popA;
         yrs++;
     }
 
     cout << "The population of town A will be greater than town B after " << yrs << " years.\n";
+    cout << "The population of town A is: " << popA << endl;
+    cout << "The population of town B is: " << popB << endl;
 
     return 0;
 }
