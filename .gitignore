@@ -2,3 +2,5 @@
 /**/*.txt
 *.docx
 *.zip
+
+!project01_Part02Data.txt
