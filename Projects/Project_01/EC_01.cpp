@@ -80,9 +80,6 @@ void collectData(double& membershipPrice, double& trainingPrice, int& payMonths,
         badInput = false;
     }
 
-    // Correct for zeros
-    membershipDiscount = (membershipDiscount == 0) ? 1 : membershipDiscount;
-
     // Adjust for discounts
     membershipPrice = membershipPrice - (membershipDiscount * membershipPrice);
 
