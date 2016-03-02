@@ -11,7 +11,7 @@ void inputFunc(double& current, double& oneYear, double& twoYear) {
     cout << "Enter the price one year ago" << endl;
     cin >> oneYear;
 
-    cout << "Enter the price one year ago" << endl;
+    cout << "Enter the price two years ago" << endl;
     cin >> twoYear;
 
 }
