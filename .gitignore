@@ -2,5 +2,6 @@
 /**/*.txt
 *.docx
 *.zip
+*.odt
 
 !project01_Part02Data.txt
