@@ -167,11 +167,7 @@ string calcSum(string x, string y) {
 }
 
 void displayResult(string res) {
-    // cout << "The sum of the two numbers is: " << res << endl;
-    for (size_t i = 0; i < res.length(); i++) {
-        cout << res[i] << endl;
-    }
-    cout << "DONE" << endl;
+    cout << "The sum of the two numbers is: " << res << endl;
 }
 
 

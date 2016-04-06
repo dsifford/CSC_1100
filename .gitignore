@@ -3,5 +3,6 @@
 *.docx
 *.zip
 *.odt
+.~lock.*
 
 !project01_Part02Data.txt
