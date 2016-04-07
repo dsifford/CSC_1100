@@ -1,9 +1,10 @@
-// Project 2, Extra Credit 1
+// Project 2, Extra Credit 2
 // Derek P Sifford
 #include <iostream>
 #include <string>
 #include <iomanip>
 #include <tuple>
+#include <fstream>
 using namespace std;
 
 // Global variable holding the "quit" state of the program.
@@ -13,6 +14,7 @@ bool quit = false;
 namespace swimOpts {
     enum toggleOption { SCHEDULE, FREE };
     enum availability { INDIVIDUAL, GROUP };
+    enum file { SAVE, LOAD };
 }
 
 
@@ -21,7 +23,7 @@ int printSchedule(char[4][4], string);
 int toggleSlot(char[4][4], string, swimOpts::toggleOption);
 int printIndGroupAvail(char[4][4], char[4][4], swimOpts::availability);
 char inputPrompt();
-
+int saveLoad(char[4][4], char[4][4], swimOpts::file);
 
 int main() {
 
@@ -57,11 +59,11 @@ int main() {
  */
 int mainMenu(char jeff[4][4], char anna[4][4]) {
 
-
-
     char selection = inputPrompt();
     swimOpts::toggleOption toggleOpt;
     swimOpts::availability availOpt;
+    swimOpts::file fileOpt;
+    int status;
 
     switch (selection) {
         case 'p':
@@ -93,6 +95,16 @@ int mainMenu(char jeff[4][4], char anna[4][4]) {
         case 'g':
             availOpt = (selection == 'i' ? swimOpts::INDIVIDUAL : swimOpts::GROUP);
             printIndGroupAvail(jeff, anna, availOpt);
+            break;
+        case 'S':
+        case 'L':
+            fileOpt = (selection == 'S' ? swimOpts::SAVE : swimOpts::LOAD);
+            status = saveLoad(jeff, anna, fileOpt);
+            if (status == 1) {
+                cout << "The operation failed. Please try again." << endl;
+                break;
+            }
+            cout << "Operation completed successfully." << endl;
             break;
         case 'q':
             quit = true;
@@ -148,6 +160,8 @@ int printSchedule(char arr[4][4], string name) {
         << " f - Free a slot\n"
         << " i - Show slots available for individual lessons\n"
         << " g - Show slots available for group lessons\n"
+        << " S - Save schedules to a file\n"
+        << " L - Load schedules from a file\n"
         << " q - Quit\n"
         << "Command: ";
 
@@ -160,6 +174,8 @@ int printSchedule(char arr[4][4], string name) {
             case 'i':
             case 'g':
             case 'q':
+            case 'S':
+            case 'L':
                 badInput = false;
                 break;
             default:
@@ -271,7 +287,7 @@ int toggleSlot(char arr[4][4], string name, swimOpts::toggleOption option) {
  * @param {char[4][4]} jeff  2D array of Jeff's schedule.
  * @param {char[4][4]} anna  2D array of Anna's schedule.
  * @param {swimOpts::availability} option  Either GROUP or INDIVIDUAL.
- * @return {int}  Status code
+ * @return {int}  Status code.
  */
 int printIndGroupAvail(char jeff[4][4], char anna[4][4], swimOpts::availability option) {
 
@@ -304,4 +320,87 @@ int printIndGroupAvail(char jeff[4][4], char anna[4][4], swimOpts::availability 
     cout << endl;
 
     return 0;
+}
+
+/**
+ * Responsible for saving or loading schedule data from a file.
+ *
+ * This function first prompts the user to input the filename they are either
+ * looking for, or would like to create.
+ *
+ * Based on the swimOpts::file param, which is an enum whose shape is { SAVE, LOAD },
+ * this function works in one of two ways.
+ * - option = SAVE:
+ * 		An ofstream variable is created with the filename the user specified.
+ * 		After instantiating the ofstream object, it is checked to see if it exists
+ * 		(ie, that it did not fail). Then both arrays are simply looped through and
+ * 		passed over to the file and the file is closed.
+ * - option = LOAD
+ * 		An ifstream variable is created with the filename specified. After
+ * 		instantiating the ifstream object, it is checked to see if it exists
+ * 		(ie, that it did not fail to load). Then the file is walked through and
+ * 		copied over to the "jeff" and "anna" arrays and the file is closed.
+ *
+ * @param {char[4][4]} jeff  2D array of Jeff's schedule.
+ * @param {char[4][4]} anna  2d array of Anna's schedule.
+ * @param {swimOpts::file} option  enum containing either SAVE or LOAD.
+ * @return {int}  Status code.
+ */
+int saveLoad(char jeff[4][4], char anna[4][4], swimOpts::file option) {
+
+    string filename;
+
+    cout << "Enter the filename with extension" << endl;
+    cin >> filename;
+
+    if (option == swimOpts::SAVE) {
+        ofstream output;
+        output.open(filename);
+
+        if (!output.is_open()) {
+            return 1;
+        }
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                output << jeff[i][j] << " ";
+            }
+            output << endl;
+        }
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                output << anna[i][j] << " ";
+            }
+            output << endl;
+        }
+
+        output.close();
+
+        return 0;
+    }
+
+    ifstream input;
+    input.open(filename);
+
+    if (!input.is_open()) {
+        return 1;
+    }
+
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            input >> jeff[i][j];
+        }
+    }
+
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            input >> anna[i][j];
+        }
+    }
+
+    input.close();
+
+    return 0;
+
 }
