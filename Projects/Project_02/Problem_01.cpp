@@ -27,7 +27,19 @@ int main() {
     return 0;
 }
 
-
+/**
+ * Responsible for retrieving a valid string of integers
+ *
+ * When invoked, this function drops into an "endless" while loop which repeats
+ * over itself until the requirements of the input string are met. The two checks
+ * that occur in this function are...
+ * 	1) Is the input string < 20 characters?
+ * 	2) Does the string contain only integer characters?
+ * If both of these criteria are met, the loop breaks and the string is returned.
+ *
+ * @return {string} A valid input string containing all integers less than 20
+ * characters in length
+ */
 string getInput() {
 
     string input;
@@ -66,6 +78,13 @@ string getInput() {
     return input;
 }
 
+/**
+ * Helper function that returns the largest length of two input strings.
+ *
+ * @param {string} x Input string 1
+ * @param {string} y Input string 2
+ * @return {int} Length of the longer string
+ */
 int getLargestSize(string x, string y) {
     if (x.length() >= y.length()) {
         return x.length();
@@ -73,6 +92,12 @@ int getLargestSize(string x, string y) {
     return y.length();
 }
 
+/**
+ * Helper function that reverses a string
+ *
+ * @param {string} x String to be reversed
+ * @return {string}  Reversed string
+ */
 string reversed(string x) {
     string output = "";
     for (int i = x.length() - 1; i >= 0; i-- ) {
@@ -81,6 +106,12 @@ string reversed(string x) {
     return output;
 }
 
+/**
+ * Returns the integer form of a character.
+ *
+ * @param {char} x Character to be converted
+ * @return {int}  The integer form of the character
+ */
 int typeSwap(char x) {
     switch (x) {
         case 49:
@@ -105,6 +136,12 @@ int typeSwap(char x) {
     return 0;
 }
 
+/**
+ * Returns the character form of an integer
+ *
+ * @param {int} x Integer to be converted
+ * @return {char} Character representation of the input integer
+ */
 char typeSwap(int x) {
     switch (x) {
         case 1:
@@ -129,6 +166,23 @@ char typeSwap(int x) {
     return '0';
 }
 
+/**
+ * Responsible for parsing the sum of two integer strings.
+ *
+ * First both strings are reversed so that the trailing zeroes do not get interpreted
+ * as being part of the integer. Next the integer strings are iterated through
+ * and each column of the integer strings are summed together. The remainders of the sum
+ * (if the sum is > 10) is then applied to the next iteration. The typeSwap function
+ * is used to convert each character to an integer to be summed together. The sum of each
+ * iteration is stored in an "intermediate" array and, finally, when the iteration is
+ * completed, the intermediate array is looped backwared through so that the number is
+ * again in the correct, non-reversed, direction as well as converted back to type char.
+ * The char array is then converted to a string and returned.
+ *
+ * @param {string} x Input string 1
+ * @param {string} y Input string 2
+ * @return {string} The string representation of the sum of the two input strings
+ */
 string calcSum(string x, string y) {
 
     x = reversed(x);
@@ -166,11 +220,17 @@ string calcSum(string x, string y) {
 
 }
 
+/**
+ * Displays the resulted sum to std out.
+ * @param {string} res The summed string to be printed to std out.
+ */
 void displayResult(string res) {
     cout << "The sum of the two numbers is: " << res << endl;
 }
 
-
+/**
+ * Unit tests
+ */
 void test() {
 
 
